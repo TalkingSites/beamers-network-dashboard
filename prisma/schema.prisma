@@ -1,0 +1,14 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+}
+
+// Full schema added in Phase 2 — placeholder to allow client generation
+model Wizard {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+}
