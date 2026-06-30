@@ -3,12 +3,111 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
-// Full schema added in Phase 2 — placeholder to allow client generation
 model Wizard {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  email           String  @unique
+  name            String
+  slug            String  @unique
+  stripeAccountId String? @unique // set when they complete Stripe onboarding
+
+  wishers   Wisher[]
+  clients   Client[]
+  retainers Retainer[]
+  meetups   Meetup[]
+}
+
+// Free punch-card clients — no Stripe involvement
+model Wisher {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name  String
+  email String?
+  notes String?
+
+  wizardId String
+  wizard   Wizard @relation(fields: [wizardId], references: [id])
+
+  wishes Wish[]
+
+  @@index([wizardId])
+}
+
+model Wish {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  position    Int
+  label       String?
+  done        Boolean   @default(false)
+  completedAt DateTime?
+
+  wisherId String
+  wisher   Wisher @relation(fields: [wisherId], references: [id])
+
+  @@unique([wisherId, position])
+  @@index([wisherId])
+}
+
+// Paying retainer clients — created when a wisher converts, backed by Stripe
+model Client {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  stripeCustomerId String @unique
+  name             String // cached from Stripe
+  email            String? // cached from Stripe
+
+  wizardId String
+  wizard   Wizard @relation(fields: [wizardId], references: [id])
+
+  retainers Retainer[]
+
+  @@index([wizardId])
+}
+
+model Retainer {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  stripeSubscriptionId String  @unique
+  title                String  // cached from Stripe
+  amount               Decimal @db.Decimal(10, 2) // cached from Stripe
+  active               Boolean @default(true)
+
+  wizardId String
+  wizard   Wizard @relation(fields: [wizardId], references: [id])
+
+  clientId String
+  client   Client @relation(fields: [clientId], references: [id])
+
+  @@index([wizardId])
+}
+
+model Meetup {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  title       String
+  date        DateTime
+  location    String
+  description String?
+  url         String?
+
+  wizardId String
+  wizard   Wizard @relation(fields: [wizardId], references: [id])
+
+  @@index([wizardId])
 }
