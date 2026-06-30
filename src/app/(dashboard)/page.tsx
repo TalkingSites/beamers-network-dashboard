@@ -10,7 +10,7 @@ const quickActions = [
     icon: "bi-stars",
     label: "New punch card",
     description: "Set up a new digital wish punch card for a wisher",
-    href: "/clients",
+    href: "/wishers",
     external: false,
   },
   {
@@ -170,7 +170,7 @@ export default function OverviewPage() {
       <div className="row row-cols-2 row-cols-md-3 row-cols-lg-5 g-3">
         {wishers.map(({ name, wishes }) => (
           <div key={name} className="col">
-            <Link href="/clients" className="wisher-card">
+            <Link href="/wishers" className="wisher-card">
               <div className="wisher-card-name">{name}</div>
               <div className="wisher-card-art">
                 {wishes.map((w, i) => (
@@ -191,7 +191,7 @@ export default function OverviewPage() {
           </div>
         ))}
           <div className="col">
-            <Link href="/clients" className="wisher-card wisher-card-add h-100">
+            <Link href="/wishers" className="wisher-card wisher-card-add h-100">
               <div className="wisher-card-name" style={{ color: "rgba(245,200,66,0.5)" }}>New Wisher</div>
               <div className="wisher-card-art">
                 <i className="bi bi-stars wish-sparkle" />
