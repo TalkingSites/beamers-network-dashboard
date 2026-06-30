@@ -81,6 +81,10 @@ export default function OverviewPage() {
         .wisher-card-body { padding: 0.6rem 0.7rem; display: flex; flex-direction: column; gap: 0.4rem; flex: 1; position: relative; z-index: 3; }
         .wish-sparkle { font-size: 2rem; color: rgba(255,255,255,0.12); }
         .wish-sparkle.done { color: var(--gold); filter: drop-shadow(0 0 6px rgba(245,200,66,0.55)); }
+        .wisher-card-add { border-style: dashed; border-color: rgba(245,200,66,0.3); background: transparent; box-shadow: none; }
+        .wisher-card-add::before { border-color: rgba(245,200,66,0.15); }
+        .wisher-card-add:hover { border-color: var(--gold); box-shadow: 0 16px 50px rgba(245,200,66,0.22), 0 0 40px rgba(245,200,66,0.08), 0 8px 30px rgba(0,0,0,0.6); transform: perspective(700px) rotateY(-6deg) rotateX(3deg) scale(1.06); }
+        .wisher-card-add .wisher-card-art { background: transparent; }
         .section-label { font-size: 0.8rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); }
       `}</style>
 
@@ -142,6 +146,19 @@ export default function OverviewPage() {
             </Link>
           </div>
         ))}
+          <div className="col">
+            <Link href="/clients" className="wisher-card wisher-card-add h-100">
+              <div className="wisher-card-name" style={{ color: "rgba(245,200,66,0.5)" }}>New Wisher</div>
+              <div className="wisher-card-art">
+                <i className="bi bi-stars wish-sparkle" />
+                <i className="bi bi-stars wish-sparkle" />
+                <i className="bi bi-stars wish-sparkle" />
+              </div>
+              <div className="wisher-card-body" style={{ alignItems: "center", justifyContent: "center" }}>
+                <i className="bi bi-plus-lg" style={{ fontSize: "1.8rem", color: "rgba(245,200,66,0.4)" }} />
+              </div>
+            </Link>
+          </div>
       </div>
     </>
   );
