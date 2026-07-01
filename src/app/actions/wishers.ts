@@ -14,6 +14,7 @@ export async function createWisher(formData: FormData) {
     data: {
       name,
       email,
+      shareToken: crypto.randomUUID(),
       wizardId: wizard.id,
       wishes: { create: [{ position: 1 }, { position: 2 }, { position: 3 }] },
     },
