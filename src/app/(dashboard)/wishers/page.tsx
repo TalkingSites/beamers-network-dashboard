@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { getWizard } from '@/lib/wizard'
 import { prisma } from '@/lib/prisma'
-import { AddWisherModal } from '@/components/AddWisherModal'
+import { NewWisherCard } from '@/components/NewWisherCard'
 
 export default async function WishersPage() {
   const wizard = await getWizard()
@@ -28,70 +28,60 @@ export default async function WishersPage() {
       `}</style>
 
       {/* Header */}
-      <div className="d-flex align-items-start justify-content-between mb-5">
-        <div>
-          <h1 style={{ fontFamily: 'Georgia, serif', fontSize: '2rem', fontWeight: 700, marginBottom: '0.3rem' }}>
-            Wishers
-          </h1>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', margin: 0 }}>
-            {wishers.length === 0
-              ? 'No wishers yet — add your first one!'
-              : `${wishers.length} wisher${wishers.length === 1 ? '' : 's'}`}
-          </p>
-        </div>
-        <AddWisherModal />
+      <div className="mb-5">
+        <h1 style={{ fontFamily: 'Georgia, serif', fontSize: '2rem', fontWeight: 700, marginBottom: '0.3rem' }}>
+          Wishers
+        </h1>
+        <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', margin: 0 }}>
+          {wishers.length === 0
+            ? 'No wishers yet — add your first one below.'
+            : `${wishers.length} wisher${wishers.length === 1 ? '' : 's'}`}
+        </p>
       </div>
 
-      {wishers.length === 0 ? (
-        <div style={{
-          textAlign: 'center',
-          padding: '4rem 2rem',
-          color: 'var(--text-muted)',
-        }}>
-          <i className="bi bi-stars" style={{ fontSize: '3rem', color: 'rgba(245,200,66,0.2)', display: 'block', marginBottom: '1rem' }} />
-          <p style={{ fontSize: '1.1rem', marginBottom: '0.5rem' }}>No wishers yet</p>
-          <p style={{ fontSize: '0.9rem' }}>Add your first wisher to start tracking their three wishes.</p>
+      <div className="row row-cols-2 row-cols-md-3 row-cols-lg-5 g-3">
+        {wishers.map(w => (
+          <div key={w.id} className="col">
+            <Link href={`/wishers/${w.id}`} className="wisher-card">
+              <div className="wisher-card-name">{w.name}</div>
+              <div className="wisher-card-art">
+                {w.wishes.map(wish => (
+                  <i
+                    key={wish.id}
+                    className={`bi bi-stars wish-sparkle${wish.done ? ' done' : ''}`}
+                  />
+                ))}
+              </div>
+              <div className="wisher-card-body">
+                {w.wishes.map(wish => (
+                  <div key={wish.id} className="d-flex align-items-start gap-2">
+                    <span style={{
+                      fontSize: '1rem',
+                      color: wish.done ? 'var(--gold)' : 'rgba(255,255,255,0.12)',
+                      marginTop: '2px',
+                      flexShrink: 0,
+                    }}>
+                      ✦
+                    </span>
+                    <span style={{
+                      fontSize: '0.9rem',
+                      color: wish.done ? 'var(--text-secondary)' : 'rgba(255,255,255,0.1)',
+                      lineHeight: 1.4,
+                    }}>
+                      {wish.label}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </Link>
+          </div>
+        ))}
+
+        {/* + card */}
+        <div className="col">
+          <NewWisherCard />
         </div>
-      ) : (
-        <div className="row row-cols-2 row-cols-md-3 row-cols-lg-5 g-3">
-          {wishers.map(w => (
-            <div key={w.id} className="col">
-              <Link href={`/wishers/${w.id}`} className="wisher-card">
-                <div className="wisher-card-name">{w.name}</div>
-                <div className="wisher-card-art">
-                  {w.wishes.map(wish => (
-                    <i
-                      key={wish.id}
-                      className={`bi bi-stars wish-sparkle${wish.done ? ' done' : ''}`}
-                    />
-                  ))}
-                </div>
-                <div className="wisher-card-body">
-                  {w.wishes.map(wish => (
-                    <div key={wish.id} className="d-flex align-items-start gap-2">
-                      <span style={{
-                        fontSize: '1rem',
-                        color: wish.done ? 'var(--gold)' : 'rgba(255,255,255,0.12)',
-                        marginTop: '2px',
-                        flexShrink: 0,
-                      }}>
-                        ✦
-                      </span>
-                      <span style={{
-                        fontSize: '0.9rem',
-                        color: wish.done ? 'var(--text-secondary)' : 'rgba(255,255,255,0.1)',
-                        lineHeight: 1.4,
-                      }}>
-                        {wish.label ?? '—'}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </Link>
-            </div>
-          ))}
-        </div>
-      )}
+      </div>
     </>
   )
 }

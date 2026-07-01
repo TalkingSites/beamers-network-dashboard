@@ -224,7 +224,7 @@ export default async function PublicCardPage({ params }: { params: Promise<{ tok
                     textDecorationColor: 'rgba(155,163,192,0.35)',
                   }}
                 >
-                  {w.label ?? (w.done ? '—' : 'Wish not yet set')}
+                  {w.label}
                 </span>
               </div>
             ))}

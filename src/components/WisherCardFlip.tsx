@@ -241,7 +241,7 @@ export function WisherCardFlip({ name, wishes, qrDataUrl, shareUrl, publicUrl }:
                     textDecoration: w.done ? 'line-through' : 'none',
                     textDecorationColor: 'rgba(155,163,192,0.35)',
                   }}>
-                    {w.label ?? '—'}
+                    {w.label}
                   </span>
                 </div>
               ))}

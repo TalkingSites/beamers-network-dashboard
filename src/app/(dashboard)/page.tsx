@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getWizard } from "@/lib/wizard";
 import { prisma } from "@/lib/prisma";
+import { NewWisherCard } from "@/components/NewWisherCard";
 
 export default async function OverviewPage() {
   const wizard = await getWizard();
@@ -161,7 +162,7 @@ export default async function OverviewPage() {
                   <div key={wish.id} className="d-flex align-items-start gap-2">
                     <span style={{ fontSize: "1rem", color: wish.done ? "var(--gold)" : "rgba(255,255,255,0.12)", marginTop: "2px", flexShrink: 0 }}>✦</span>
                     <span style={{ fontSize: "1.05rem", color: wish.done ? "var(--text-secondary)" : "rgba(255,255,255,0.1)", lineHeight: 1.4 }}>
-                      {wish.label ?? "—"}
+                      {wish.label}
                     </span>
                   </div>
                 ))}
@@ -170,17 +171,7 @@ export default async function OverviewPage() {
           </div>
         ))}
         <div className="col">
-          <Link href="/wishers" className="wisher-card wisher-card-add h-100">
-            <div className="wisher-card-name" style={{ color: "rgba(245,200,66,0.5)" }}>New Wisher</div>
-            <div className="wisher-card-art">
-              <i className="bi bi-stars wish-sparkle" />
-              <i className="bi bi-stars wish-sparkle" />
-              <i className="bi bi-stars wish-sparkle" />
-            </div>
-            <div className="wisher-card-body" style={{ alignItems: "center", justifyContent: "center" }}>
-              <i className="bi bi-plus-lg" style={{ fontSize: "1.8rem", color: "rgba(245,200,66,0.4)" }} />
-            </div>
-          </Link>
+          <NewWisherCard />
         </div>
       </div>
     </>
