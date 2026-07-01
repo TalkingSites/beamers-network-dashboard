@@ -6,7 +6,7 @@ import { useRef, useState } from "react";
 
 const navItems = [
   { href: "/",          label: "Overview",   icon: "bi-house-door"    },
-  { href: "/clients",   label: "Wishers",    icon: "bi-people"        },
+  { href: "/wishers",   label: "Wishers",    icon: "bi-stars"         },
   { href: "/retainers", label: "Retainers",  icon: "bi-arrow-repeat"  },
   { href: "/kit",       label: "Beamer Kit", icon: "bi-box-seam"      },
   { href: "/meetups",   label: "Meetups",    icon: "bi-calendar-event"},

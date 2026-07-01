@@ -1,8 +1,15 @@
 import Link from "next/link";
 import { getWizard } from "@/lib/wizard";
+import { prisma } from "@/lib/prisma";
 
 export default async function OverviewPage() {
   const wizard = await getWizard();
+  const recentWishers = await prisma.wisher.findMany({
+    where: { wizardId: wizard.id },
+    include: { wishes: { orderBy: { position: 'asc' } } },
+    orderBy: { createdAt: 'desc' },
+    take: 4,
+  });
 
   const quickActions = [
   {
@@ -49,32 +56,6 @@ export default async function OverviewPage() {
   },
 ];
 
-const wishers = [
-  {
-    name: "Sarah Chen",
-    wishes: [
-      { label: "Migrate off Squarespace", done: true },
-      { label: "Set up email automation", done: true },
-      { label: "Train on managing site", done: false },
-    ],
-  },
-  {
-    name: "Marcus Webb",
-    wishes: [
-      { label: "Set up GitHub repo", done: true },
-      { label: "Deploy to Netlify", done: false },
-      { label: "", done: false },
-    ],
-  },
-  {
-    name: "Priya Nair",
-    wishes: [
-      { label: "Audit current tools", done: false },
-      { label: "", done: false },
-      { label: "", done: false },
-    ],
-  },
-];
 
   return (
     <>
@@ -166,21 +147,21 @@ const wishers = [
       {/* Recent wishers */}
       <p className="section-label mb-3">Recent wishers</p>
       <div className="row row-cols-2 row-cols-md-3 row-cols-lg-5 g-3">
-        {wishers.map(({ name, wishes }) => (
-          <div key={name} className="col">
-            <Link href="/wishers" className="wisher-card">
-              <div className="wisher-card-name">{name}</div>
+        {recentWishers.map(w => (
+          <div key={w.id} className="col">
+            <Link href={`/wishers/${w.id}`} className="wisher-card">
+              <div className="wisher-card-name">{w.name}</div>
               <div className="wisher-card-art">
-                {wishes.map((w, i) => (
-                  <i key={i} className={`bi bi-stars wish-sparkle${w.done ? " done" : ""}`} />
+                {w.wishes.map(wish => (
+                  <i key={wish.id} className={`bi bi-stars wish-sparkle${wish.done ? " done" : ""}`} />
                 ))}
               </div>
               <div className="wisher-card-body">
-                {wishes.map((w, i) => (
-                  <div key={i} className="d-flex align-items-start gap-2">
-                    <span style={{ fontSize: "1rem", color: w.done ? "var(--gold)" : "rgba(255,255,255,0.12)", marginTop: "2px", flexShrink: 0 }}>✦</span>
-                    <span style={{ fontSize: "1.05rem", color: w.done ? "var(--text-secondary)" : "rgba(255,255,255,0.1)", lineHeight: 1.4 }}>
-                      {w.done ? w.label : "—"}
+                {w.wishes.map(wish => (
+                  <div key={wish.id} className="d-flex align-items-start gap-2">
+                    <span style={{ fontSize: "1rem", color: wish.done ? "var(--gold)" : "rgba(255,255,255,0.12)", marginTop: "2px", flexShrink: 0 }}>✦</span>
+                    <span style={{ fontSize: "1.05rem", color: wish.done ? "var(--text-secondary)" : "rgba(255,255,255,0.1)", lineHeight: 1.4 }}>
+                      {wish.label ?? "—"}
                     </span>
                   </div>
                 ))}
@@ -188,19 +169,19 @@ const wishers = [
             </Link>
           </div>
         ))}
-          <div className="col">
-            <Link href="/wishers" className="wisher-card wisher-card-add h-100">
-              <div className="wisher-card-name" style={{ color: "rgba(245,200,66,0.5)" }}>New Wisher</div>
-              <div className="wisher-card-art">
-                <i className="bi bi-stars wish-sparkle" />
-                <i className="bi bi-stars wish-sparkle" />
-                <i className="bi bi-stars wish-sparkle" />
-              </div>
-              <div className="wisher-card-body" style={{ alignItems: "center", justifyContent: "center" }}>
-                <i className="bi bi-plus-lg" style={{ fontSize: "1.8rem", color: "rgba(245,200,66,0.4)" }} />
-              </div>
-            </Link>
-          </div>
+        <div className="col">
+          <Link href="/wishers" className="wisher-card wisher-card-add h-100">
+            <div className="wisher-card-name" style={{ color: "rgba(245,200,66,0.5)" }}>New Wisher</div>
+            <div className="wisher-card-art">
+              <i className="bi bi-stars wish-sparkle" />
+              <i className="bi bi-stars wish-sparkle" />
+              <i className="bi bi-stars wish-sparkle" />
+            </div>
+            <div className="wisher-card-body" style={{ alignItems: "center", justifyContent: "center" }}>
+              <i className="bi bi-plus-lg" style={{ fontSize: "1.8rem", color: "rgba(245,200,66,0.4)" }} />
+            </div>
+          </Link>
+        </div>
       </div>
     </>
   );
