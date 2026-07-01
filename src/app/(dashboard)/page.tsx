@@ -1,11 +1,10 @@
-"use client";
-
 import Link from "next/link";
+import { getWizard } from "@/lib/wizard";
 
-const WIZARD_NAME = "Alex";
-const WIZARD_SLUG = "alex";
+export default async function OverviewPage() {
+  const wizard = await getWizard();
 
-const quickActions = [
+  const quickActions = [
   {
     icon: "bi-stars",
     label: "New punch card",
@@ -24,7 +23,7 @@ const quickActions = [
     icon: "bi-globe2",
     label: "View your profile",
     description: "See your public Beamers page",
-    href: `https://beamers.network/wizards/${WIZARD_SLUG}`,
+    href: `https://beamers.network/wizards/${wizard.slug}`,
     external: true,
   },
   {
@@ -77,7 +76,6 @@ const wishers = [
   },
 ];
 
-export default function OverviewPage() {
   return (
     <>
       <style>{`
@@ -133,7 +131,7 @@ export default function OverviewPage() {
       <div className="mb-5">
         <div className="welcome-wrap">
           <h1 className="welcome-heading">
-            Welcome back, {WIZARD_NAME}.
+            Welcome back, {wizard.name.split(" ")[0]}.
             <span className="welcome-sparkles" aria-hidden="true" />
           </h1>
         </div>
