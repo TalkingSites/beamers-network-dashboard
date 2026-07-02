@@ -17,7 +17,7 @@ export default async function OverviewPage() {
     icon: "bi-stars",
     label: "New punch card",
     description: "Set up a new digital wish punch card for a wisher",
-    href: "/wishers",
+    href: "/wishers?new=1",
     external: false,
   },
   {
@@ -100,7 +100,8 @@ export default async function OverviewPage() {
         .wisher-card-name { padding: 0.9rem 0.6rem; min-height: 2.75rem; font-size: 1.6rem; font-weight: 700; font-family: var(--font-dancing-script); color: var(--text-primary); text-align: center; border-bottom: 1px solid rgba(245,200,66,0.2); position: relative; z-index: 3; line-height: 1.3; display: flex; align-items: center; justify-content: center; }
         .wisher-card-art { display: flex; align-items: center; justify-content: center; gap: 0.4rem; padding: 0.9rem 0.5rem; background: linear-gradient(135deg, #070e1e, #101a30, #070e1e); border-bottom: 1px solid rgba(245,200,66,0.2); position: relative; z-index: 3; }
         .wisher-card-body { padding: 0.6rem 0.7rem; display: flex; flex-direction: column; gap: 0.4rem; flex: 1; position: relative; z-index: 3; }
-        .wish-sparkle { font-size: 2rem; color: rgba(255,255,255,0.12); }
+        .wish-sparkle { font-size: 2rem; color: rgba(255,255,255,0.22); }
+        .wish-sparkle.filled { color: rgba(245,200,66,0.5); }
         .wish-sparkle.done { color: var(--gold); filter: drop-shadow(0 0 6px rgba(245,200,66,0.55)); }
         .wisher-card-add { border-style: dashed; border-color: rgba(245,200,66,0.3); background: transparent; box-shadow: none; }
         .wisher-card-add::before { border-color: rgba(245,200,66,0.15); }
@@ -154,14 +155,14 @@ export default async function OverviewPage() {
               <div className="wisher-card-name">{w.name}</div>
               <div className="wisher-card-art">
                 {w.wishes.map(wish => (
-                  <i key={wish.id} className={`bi bi-stars wish-sparkle${wish.done ? " done" : ""}`} />
+                  <i key={wish.id} className={`bi bi-stars wish-sparkle${wish.done ? " done" : wish.label ? " filled" : ""}`} />
                 ))}
               </div>
               <div className="wisher-card-body">
                 {w.wishes.map(wish => (
                   <div key={wish.id} className="d-flex align-items-start gap-2">
-                    <span style={{ fontSize: "1rem", color: wish.done ? "var(--gold)" : "rgba(255,255,255,0.12)", marginTop: "2px", flexShrink: 0 }}>✦</span>
-                    <span style={{ fontSize: "1.05rem", color: wish.done ? "var(--text-secondary)" : "rgba(255,255,255,0.1)", lineHeight: 1.4 }}>
+                    <span style={{ fontSize: "1rem", color: wish.done ? "var(--gold)" : wish.label ? "rgba(245,200,66,0.5)" : "rgba(255,255,255,0.22)", marginTop: "2px", flexShrink: 0 }}>✦</span>
+                    <span style={{ fontSize: "1.05rem", color: wish.done ? "var(--text-secondary)" : wish.label ? "rgba(255,255,255,0.7)" : "rgba(255,255,255,0.22)", lineHeight: 1.4 }}>
                       {wish.label}
                     </span>
                   </div>

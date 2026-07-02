@@ -5,39 +5,52 @@ import { redirect } from 'next/navigation'
 import { getWizard } from '@/lib/wizard'
 import { prisma } from '@/lib/prisma'
 
-export async function createWisher(formData: FormData) {
+export async function createWisher(
+  _prev: unknown,
+  formData: FormData,
+): Promise<{ id: string; shareToken: string; name: string }> {
   const wizard = await getWizard()
   const name = (formData.get('name') as string).trim()
   const email = (formData.get('email') as string)?.trim() || null
+  const shareToken = crypto.randomUUID()
+
+  const wishes = [1, 2, 3].map(pos => ({
+    position: pos,
+    label: (formData.get(`wish${pos}`) as string)?.trim() || null,
+  }))
 
   const wisher = await prisma.wisher.create({
     data: {
       name,
       email,
-      shareToken: crypto.randomUUID(),
+      shareToken,
       wizardId: wizard.id,
-      wishes: { create: [{ position: 1 }, { position: 2 }, { position: 3 }] },
+      wishes: { create: wishes },
     },
   })
 
   revalidatePath('/wishers')
-  redirect(`/wishers/${wisher.id}`)
+  return { id: wisher.id, shareToken, name }
 }
 
-export async function updateWisher(formData: FormData) {
+export async function updateWisher(id: string, name: string, email: string | null) {
   const wizard = await getWizard()
-  const id = formData.get('id') as string
-  const name = (formData.get('name') as string).trim()
-  const email = (formData.get('email') as string)?.trim() || null
-  const notes = (formData.get('notes') as string)?.trim() || null
-
   const existing = await prisma.wisher.findFirst({ where: { id, wizardId: wizard.id } })
   if (!existing) throw new Error('Unauthorized')
 
-  await prisma.wisher.update({ where: { id }, data: { name, email, notes } })
+  await prisma.wisher.update({ where: { id }, data: { name: name.trim(), email } })
 
   revalidatePath(`/wishers/${id}`)
   revalidatePath('/wishers')
+}
+
+export async function updateWisherNotes(id: string, notes: string | null) {
+  const wizard = await getWizard()
+  const existing = await prisma.wisher.findFirst({ where: { id, wizardId: wizard.id } })
+  if (!existing) throw new Error('Unauthorized')
+
+  await prisma.wisher.update({ where: { id }, data: { notes } })
+  revalidatePath(`/wishers/${id}`)
 }
 
 export async function toggleWish(wishId: string, done: boolean) {

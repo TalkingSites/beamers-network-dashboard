@@ -1,105 +1,48 @@
 # Beamers Network Dashboard
 
-The Wizard-facing dashboard. Verified Beamers log in here to manage their clients, track wishes, access their kit, and view their retainers.
+Wizard-facing dashboard. Verified Beamers log in to manage clients (Wishers), track the 3-wish punch card, view retainers, edit their public profile, and download their kit.
 
-Admin Beamers use Authentik impersonation to access any Wizard's dashboard — no separate admin UI needed.
+Admin access is via Authentik impersonation — no separate admin UI.
 
-**Stack:** Next.js · Neon (Postgres) · Prisma · Auth.js (Authentik OIDC) · Vercel  
+**Stack:** Next.js 16 (App Router) · Neon (Postgres) · Prisma 5 · Auth.js (Authentik OIDC) · Tailwind v4
 **Subdomain:** `app.beamers.network`
 
----
+## Status
 
-## Build plan
+- ✅ Phase 1 — Scaffold
+- ✅ Phase 2 — DB schema + Authentik OIDC auth + first-login wizard creation
+- ✅ Phase 3 — Wishers + punch card tracker
+- ✅ Phase 3.5 — Public wish card + QR flip + Web Share API
+- ⬜ Phase 4 — Retainer overview
+- ⬜ Phase 5 — Public profile editor
+- ⬜ Phase 6 — Kit downloads (business card, flyers)
+- ⬜ Phase 7 — Meetups
+- ⬜ Phase 8 — Stripe integration
+- ⬜ Phase 10 — Polish & production
 
-### Phase 1 — Project scaffold
-- `create-next-app` with TypeScript and App Router
-- Install and configure Prisma
-- Connect to a Neon Postgres database
-- Basic layout shell (sidebar nav, header, content area)
-- Deploy to Vercel with environment variables, confirm subdomain works
+## Routes
 
----
+```
+/                 → overview
+/wishers          → punch card tracker (clients + wishes)
+/wishers/[id]     → wisher detail
+/card/[token]     → public wish card (shareable, QR)
+/retainers        → retainer overview (stub)
+/profile          → public profile editor (stub)
+/kit              → kit downloads (stub)
+/meetups          → meetups (stub)
+/login            → Authentik OIDC login
+```
 
-### Phase 2 — Database schema
-Design and migrate the core tables:
+## Local dev
 
-- `wizards` — linked to Authentik user ID, name, bio, city, status (pending / active / suspended)
-- `clients` — belongs to a wizard, name, contact, notes
-- `wishes` — belongs to a client, title, description, status (open / in progress / done), order (1–3)
-- `retainers` — belongs to a client, start date, fortnightly rate, active flag, payment status
-- `meetups` — date, location, description (admin-managed)
+```bash
+npm install
+npx prisma generate    # after schema changes
+npx prisma migrate dev # apply schema
+npm run dev            # localhost:3000
+```
 
-Seed with a couple of test Wizards and clients so development has real data to work with.
+Needs a `.env` with `DATABASE_URL` (Neon) and Authentik OIDC vars — see `.env.example`.
 
----
-
-### Phase 3 — Client & wish tracker (punch card)
-The core feature. A Wizard sees all their clients, each with a punch card showing wish 1, 2, 3.
-
-- List all clients for the logged-in Wizard
-- Add a new client
-- Add / edit a wish for a client (title, description, status)
-- Mark a wish as done — card punches
-- When all 3 wishes are done, prompt to convert to a retainer
-- Visual punch card component matching the branding
-
----
-
-### Phase 4 — Retainer overview
-- List all active retainers for the Wizard
-- Show client name, start date, rate, and payment status
-- Mark payment as received (manually for now, Stripe later)
-- Simple status: active / paused / ended
-
----
-
-### Phase 5 — Public profile editor
-Each Wizard has a public page on beamers.network. This phase lets them edit it from the dashboard.
-
-- Edit bio, city, skills / domains
-- Upload a photo
-- Toggle visibility (show / hide from public listing)
-- Changes write to the database; the public site reads from the same source (need to connect beamers.network 11ty site to the DB or use an API endpoint)
-
----
-
-### Phase 6 — Business card & kit downloads
-- Display the Wizard's personalised business card (rendered from a template with their name, contact, QR code)
-- Download as PDF
-- Download flyer guide (static PDF, same for all Wizards)
-- QR code links to their public profile page
-
----
-
-### Phase 7 — Meetups
-- List upcoming Beamer meetups (read-only for Wizards)
-- Admin can create/edit meetups (or via a separate Authentik-gated route)
-- RSVP button (nice to have)
-
----
-
-### Phase 8 — Stripe integration
-- Connect Stripe to handle retainer payments
-- Client pays Beamers Network, Wizard receives payout on fortnightly cycle
-- Webhook updates retainer payment status automatically
-- Wizard sees payment history per retainer
-
----
-
-### Phase 9 — Auth (Authentik)
-- Set up Authentik OIDC client for the dashboard app
-- Wire up Auth.js with the Authentik provider
-- Protect all dashboard routes — redirect to login if not authenticated
-- On first login, create a `wizard` row if one doesn't exist yet (or mark as pending if not yet approved)
-- Store Authentik user ID on the wizard row so we can always link session → wizard
-
-Impersonation (admin feature) is handled entirely in Authentik — no code needed in the dashboard.
-
----
-
-### Phase 10 — Polish & production
-- Email notifications (application approved, wish completed, retainer payment received)
-- Mobile-responsive dashboard layout
-- Dark / light mode matching beamers.network theme
-- Error states, empty states, loading skeletons
-- End-to-end testing of the Wizard journey (apply → approved → first client → first wish → retainer)
+See `CLAUDE.md` for theme variables and key file locations.
