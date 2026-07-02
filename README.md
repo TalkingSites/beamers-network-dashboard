@@ -46,3 +46,7 @@ npm run dev            # localhost:3000
 Needs a `.env` with `DATABASE_URL` (Neon) and Authentik OIDC vars — see `.env.example`.
 
 See `CLAUDE.md` for theme variables and key file locations.
+
+## Deployment
+
+Hosted on Netlify (`netlify.toml` uses `@netlify/plugin-nextjs`), deployed at `wish.beamers.network`. Set the vars from `.env.example` in the Netlify site's environment settings.
