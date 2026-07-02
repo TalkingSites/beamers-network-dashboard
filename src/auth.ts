@@ -2,6 +2,7 @@ import NextAuth from "next-auth";
 import Authentik from "next-auth/providers/authentik";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+  trustHost: true,
   secret: process.env.AUTH_SECRET ?? process.env.NEXTAUTH_SECRET,
   providers: [
     Authentik({
