@@ -14,7 +14,7 @@ Wizard-facing dashboard for Beamers Network. Wizards manage clients, track the 3
 - **Prisma 5** (`prisma-client-js`) — do NOT upgrade to Prisma 6/7, breaking changes
 - **Postgres** — Neon for now (free, easy to migrate off later via `pg_dump`)
 - **Vercel** for deployment (planned)
-- **Subdomain:** `app.beamers.network`
+- **Subdomain:** `wish.beamers.network`
 
 ## Key files
 | File | Purpose |

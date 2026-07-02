@@ -5,7 +5,7 @@ Wizard-facing dashboard. Verified Beamers log in to manage clients (Wishers), tr
 Admin access is via Authentik impersonation — no separate admin UI.
 
 **Stack:** Next.js 16 (App Router) · Neon (Postgres) · Prisma 5 · Auth.js (Authentik OIDC) · Tailwind v4
-**Subdomain:** `app.beamers.network`
+**Subdomain:** `wish.beamers.network`
 
 ## Status
 
