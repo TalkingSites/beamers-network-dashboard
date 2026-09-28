@@ -125,7 +125,7 @@ export default async function OverviewPage() {
 
       {/* Quick actions */}
       <p className="section-label mb-3">Quick actions</p>
-      <div className="row row-cols-2 row-cols-md-3 row-cols-lg-6 g-3 mb-5 spell-row">
+      <div className="row row-cols-2 row-cols-md-3 row-cols-lg-6 g-2 mb-5 spell-row">
         {quickActions.map(({ icon, label, description, href, external }) => (
           <div key={label} className="col">
             <Link
